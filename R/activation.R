@@ -238,7 +238,7 @@ activateEngage <- function(warjack, target = list(stats = c(DEF = 12, ARM = 18, 
             
             damage <- melee(warjack = warjack, target = target, 
                 boost_hit = boost_hit, boost_damage = boost_damage, 
-                foc = foc, kd = kd, dist = dist, dice = dice)
+                foc = foc, kd = kd, dice = dice)
         }
     }
     
@@ -295,7 +295,7 @@ activateCharge <- function(warjack, target = list(stats = c(DEF = 12, ARM = 18, 
             
             damage <- melee(warjack = warjack, target = target, 
                 boost_hit = boost_hit, boost_damage = boost_damage, 
-                foc = foc, kd = kd, dist = dist, dice = dice)
+                foc = foc, kd = kd, dice = dice)
         }
     }
     
@@ -352,7 +352,7 @@ activateTrample <- function(warjack, target = list(stats = c(DEF = 12, ARM = 18,
             
             damage <- melee(warjack = warjack, target = target, 
                 boost_hit = boost_hit, boost_damage = boost_damage, 
-                foc = foc, kd = kd, dist = dist, dice = dice)
+                foc = foc, kd = kd, dice = dice)
         }
     }
     
@@ -410,7 +410,7 @@ activateSlam <- function(warjack, target = list(stats = c(DEF = 12, ARM = 18, BA
             
             damage <- melee(warjack = warjack, target = target, 
                 boost_hit = boost_hit, boost_damage = boost_damage, 
-                foc = foc, kd = kd, dist = dist, dice = dice)
+                foc = foc, kd = kd, dice = dice)
         }
     }
     
@@ -468,7 +468,7 @@ activateHeadbutt <- function(warjack, target = list(stats = c(DEF = 12, ARM = 18
             
             damage <- melee(warjack = warjack, target = target, 
                 boost_hit = boost_hit, boost_damage = boost_damage, 
-                foc = foc, kd = kd, dist = dist, dice = dice)
+                foc = foc, kd = kd, dice = dice)
         }
     }
     
