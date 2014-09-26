@@ -31,5 +31,5 @@ activation(blueleader, target = list(stats = c(DEF = 13, ARM = 13, BASE = 30)),
 # charge in full tilt
 activation(blueleader, target = list(stats = c(DEF = 13, ARM = 13, BASE = 30)),
     strategy = "charge", boost_hit = TRUE, boost_damage = TRUE, foc = 3,
-    dice = c(1, 5, 4, 1, 1, 2))
+    dice = c(1, 5, 4, 1, 1, 2, 5, 5, 2, 6, 3))
 ```
