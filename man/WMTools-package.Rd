@@ -2,10 +2,10 @@
 \name{WMTools-package}
 \alias{WMTools}
 \alias{WMTools-package}
-\title{Tools for simulating activations in Warmachine(TM)}
+\title{Tools for simulating activations in Warmachine(R)}
 \description{
 Simulate ranged and melee attacks in the game of
-Warmachine(TM)
+Warmachine(R)
 }
 \details{
 \tabular{ll}{ Package: \tab WMTools \cr Type: \tab Package

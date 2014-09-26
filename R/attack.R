@@ -31,7 +31,7 @@
 #'         melee = list('quake hammer' = list(stats = c(RNG = 2, PAS = 18), 
 #'                 special = c("crit knockdown")), 
 #'             'open fist' = list(stats = c(RNG = 0.5, PAS = 14), special = character(0))))
-#'     attack(blueleader, which = 1, target = list(stats = list(DEF = 13, ARM = 13, BASE = 30)), 
+#'     attack(blueleader, which = 1, target = list(stats = c(DEF = 13, ARM = 13, BASE = 30)), 
 #'         boost_hit = TRUE, boost_damage = TRUE, foc = 3, 
 #'         dice = c(1, 5, 4, 1, 1, 2))
 
@@ -49,7 +49,15 @@ attack <- function(warjack, which = 1, target = list(stats = c(DEF = 12, ARM = 1
     hit <- FALSE
     miss <- FALSE
     
-    if (warjack$melee[[which]]$stats["RNG"] < dist) { miss <- TRUE }
+    
+    wjs <- warjack$melee[[which]]$special
+    
+    wjp <- warjack$melee[[which]]$stats["PAS"]
+    
+    wjr <- warjack$melee[[which]]$stats["RNG"]
+    
+    
+    if (wjr < dist) { miss <- TRUE }
 
     # charge attack always spend focus first
     if (charge) { 
@@ -58,7 +66,7 @@ attack <- function(warjack, which = 1, target = list(stats = c(DEF = 12, ARM = 1
         num_dice_dam <- num_dice_dam + 1
         boost_damage <- FALSE
         
-        if ("powerful charge" %in% warjack$melee[[which]]$special) { warjack$stats["MAT"] <- warjack$stats["MAT"] + 2 }
+        if ("powerful charge" %in% wjs) { warjack$stats["MAT"] <- warjack$stats["MAT"] + 2 }
     }
 
     # boost hit if able when not knocked down
@@ -87,13 +95,13 @@ attack <- function(warjack, which = 1, target = list(stats = c(DEF = 12, ARM = 1
 
         # check for critical effect
         if (!is.logical(hit_roll) & sum(duplicated(hit_roll)) > 0) { 
-            if ("crit knockdown" %in% warjack$melee[[which]]$special) { kd <- TRUE }
+            if ("crit knockdown" %in% wjs) { kd <- TRUE }
         }
 
         damage_roll <- dice[seq.int(from = pos, to = pos + num_dice_dam - 1)]
         if (any(is.na(damage_roll))) { stop("insufficient dice for damage_roll") }
         pos <- pos + num_dice_dam
-        damage <- unname(sum(warjack$melee[[which]]$stats["PAS"], damage_roll) - target$stats["ARM"])
+        damage <- unname(sum(wjp, damage_roll) - target$stats["ARM"])
     }
     if (damage < 0) { damage <- 0 }
 
