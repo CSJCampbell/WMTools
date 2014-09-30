@@ -1,7 +1,8 @@
 
 #' @title Perform a Melee Attack
 #' @param warjack list warjack object with elements stats, range and melee
-#' @param which 
+#' @param which single integer or single character 'power'
+#' index of warjack weapon to use, or identify as a power attack
 #' @param target list target warjack object with elements stats and special
 #'     stats has elements \enumerate{
 #'     \item DEF single numeric NB should include effect of being knocked down 
@@ -35,27 +36,49 @@
 #'         boost_hit = TRUE, boost_damage = TRUE, foc = 3, 
 #'         dice = c(1, 5, 4, 1, 1, 2))
 
-attack <- function(warjack, which = 1, target = list(stats = c(DEF = 12, ARM = 18, BASE = 50)), 
+attack <- function(warjack, which = 1L, target = list(stats = c(DEF = 12, ARM = 18, BASE = 50)), 
     charge = FALSE, boost_hit = TRUE, boost_damage = TRUE, foc = 0, kd = FALSE, dist = 0,
     dice = sample(1:6, size = 20, replace = TRUE), pos = 1) {
     
     if (!is.element("stats", names(warjack)) | !is.element("melee", names(warjack))) {
         stop("missing elements in warjack object") }
     
+    if (is.na(which)) { stop("which is missing") }
+    
     num_dice_hit <- 2
+    
     num_dice_dam <- 2
+    
     damage <- 0
+    
     hit_roll <- FALSE
+    
     hit <- FALSE
+    
     miss <- FALSE
     
-    
-    wjs <- warjack$melee[[which]]$special
-    
-    wjp <- warjack$melee[[which]]$stats["PAS"]
-    
-    wjr <- warjack$melee[[which]]$stats["RNG"]
-    
+    if (!is.numeric(which)) {
+        
+        if (which == "power") {
+            
+            wjs <- which
+            
+            wjp <- warjack$stats["STR"]
+            
+            wjr <- 0.5
+            
+            if (warjack$stats["BASE"] > 50) { wjr <- 2 }
+            
+        } else { stop("which must be integer or 'power'") }
+        
+    } else {
+        
+        wjs <- warjack$melee[[which]]$special
+        
+        wjp <- warjack$melee[[which]]$stats["PAS"]
+        
+        wjr <- warjack$melee[[which]]$stats["RNG"]
+    }
     
     if (wjr < dist) { miss <- TRUE }
 

@@ -12,6 +12,18 @@
 #' @docType package
 #' @title Tools for simulating activations in Warmachine(R)
 #' @keywords package game simulation
+#' @examples
+#'     blueleader <- list(stats = c(SPD = 5, MAT = 7, RAT = 5), 
+#'         range = list(),
+#'         melee = list('quake hammer' = list(stats = c(RNG = 2, PAS = 18), 
+#'                 special = c("crit knockdown")), 
+#'             'open fist' = list(stats = c(RNG = 0.5, PAS = 14), special = character(0))))
+#'     activation(blueleader, which = 1, target = list(stats = list(DEF = 13, ARM = 13, BASE = 30)), 
+#'         strategy = "aim", boost_hit = TRUE, boost_damage = TRUE, foc = 3, 
+#'         dice = c(1, 5, 4, 1, 1, 2))
+#'     activation(blueleader, which = 1, target = list(stats = list(DEF = 13, ARM = 13, BASE = 30)), 
+#'         strategy = "charge", boost_hit = TRUE, boost_damage = TRUE, foc = 3, 
+#'         dice = c(1, 5, 4, 1, 1, 2))
 NULL
 
 #' @title Perform activation following a named strategy
@@ -23,7 +35,9 @@ NULL
 #'     \item ARM single numeric armour value
 #'     \item BASE single numeric diameter of base (mm)
 #' }
-#' @param strategy single character attack mode, from list 'aim', 'assault' (walk and shoot), 'engage' (walk and melee), 'charge', 'trample', 'slam', 'headbutt'
+#' @param strategy single character attack mode, from list 
+#' 'aim', 'assault' (walk and shoot), 'engage' (walk and melee), 
+#' 'charge', 'trample', 'slam', 'headbut'
 #' @param boost_hit single logical boost attack roll?
 #' @param boost_damage single logical boost damage roll?
 #' @param foc single numeric
@@ -87,7 +101,6 @@ activation <- function(warjack, target = list(stats = c(DEF = 12, ARM = 18, BASE
 #'     \item ARM single numeric armour value
 #'     \item BASE single numeric diameter of base (mm)
 #' }
-#' @param strategy single character attack mode, from list 'aim', 'assault' (walk and shoot), 'engage' (walk and melee), 'charge', 'trample', 'slam', 'headbut'
 #' @param boost_hit single logical boost attack roll?
 #' @param boost_damage single logical boost damage roll?
 #' @param foc single numeric
@@ -168,7 +181,11 @@ activateAssault <- function(warjack, target = list(stats = c(DEF = 12, ARM = 18,
     if (!all(is.element(c("stats", "range"), names(warjack)))) {
         stop("missing elements in warjack object") }
     
-    dist <- dist - warjack$stats["SPD"]
+    spd <- warjack$stats["SPD"]
+    
+    if (is.na(spd)) { stop("SPD is missing from warjack stats") }
+    
+    dist <- dist - spd
     
     if (dist < 0) { dist <- 0 }
     
@@ -224,7 +241,11 @@ activateEngage <- function(warjack, target = list(stats = c(DEF = 12, ARM = 18, 
     if (!all(is.element(c("stats", "range"), names(warjack)))) {
         stop("missing elements in warjack object") }
     
-    dist <- dist - warjack$stats["SPD"]
+    spd <- warjack$stats["SPD"]
+    
+    if (is.na(spd)) { stop("SPD is missing from warjack stats") }
+    
+    dist <- dist - spd
     
     if (dist < 0) { dist <- 0 }
     
@@ -281,7 +302,11 @@ activateCharge <- function(warjack, target = list(stats = c(DEF = 12, ARM = 18, 
     if (!all(is.element(c("stats", "range"), names(warjack)))) {
         stop("missing elements in warjack object") }
     
-    dist <- dist - warjack$stats["SPD"]
+    spd <- warjack$stats["SPD"] + 3
+    
+    if (is.na(spd)) { stop("SPD is missing from warjack stats") }
+    
+    dist <- dist - spd
     
     if (dist < 0) { dist <- 0 }
     
@@ -338,24 +363,39 @@ activateTrample <- function(warjack, target = list(stats = c(DEF = 12, ARM = 18,
     if (!all(is.element(c("stats", "range"), names(warjack)))) {
         stop("missing elements in warjack object") }
     
-    dist <- dist - warjack$stats["SPD"]
+    damage <- 0    
     
-    if (dist < 0) { dist <- 0 }
+    spd <- warjack$stats["SPD"] + 3
     
-    damage <- 0
+    if (is.na(spd)) { stop("SPD is missing from warjack stats") }
     
-    if (length(warjack$melee) > 0) {
+    dist <- dist - spd
+    
+    if (dist >= -target$stats["BASE"]) { 
         
-        checkRange <- sapply(warjack$melee, is.in.melee, dist = dist)
+        if (dist < 0) { dist <- 0 }
         
-        if (any(checkRange)) {
+        if (length(warjack$melee) > 0) {
             
-            damage <- melee(warjack = warjack, target = target, 
-                boost_hit = boost_hit, boost_damage = boost_damage, 
-                foc = foc, kd = kd, dice = dice)
+            checkRange <- sapply(warjack$melee, is.in.melee, dist = dist)
+            
+            if (any(checkRange)) {
+                
+                damage <- melee(warjack = warjack, target = target, 
+                    boost_hit = boost_hit, boost_damage = boost_damage, 
+                    foc = foc, kd = kd, dice = dice)
+            }
         }
-    }
     
+    } else {
+        
+        # trample attack
+        
+        damage <- attack(warjack = warjack, which = "power", target = target, 
+            charge = FALSE, boost_hit = boost_hit, boost_damage = boost_damage, 
+            foc = foc, kd = kd, dist = 0,
+            dice = dice, pos = 1)
+    }
     return(damage)
 }
 
@@ -396,7 +436,11 @@ activateSlam <- function(warjack, target = list(stats = c(DEF = 12, ARM = 18, BA
     if (!all(is.element(c("stats", "range"), names(warjack)))) {
         stop("missing elements in warjack object") }
     
-    dist <- dist - warjack$stats["SPD"]
+    spd <- warjack$stats["SPD"]
+    
+    if (is.na(spd)) { stop("SPD is missing from warjack stats") }
+    
+    dist <- dist - spd
     
     if (dist < 0) { dist <- 0 }
     
@@ -416,7 +460,6 @@ activateSlam <- function(warjack, target = list(stats = c(DEF = 12, ARM = 18, BA
     
     return(damage)
 }
-
 
 
 
@@ -454,7 +497,11 @@ activateHeadbutt <- function(warjack, target = list(stats = c(DEF = 12, ARM = 18
     if (!all(is.element(c("stats", "range"), names(warjack)))) {
         stop("missing elements in warjack object") }
     
-    dist <- dist - warjack$stats["SPD"]
+    spd <- warjack$stats["SPD"]
+    
+    if (is.na(spd)) { stop("SPD is missing from warjack stats") }
+    
+    dist <- dist - spd
     
     if (dist < 0) { dist <- 0 }
     
