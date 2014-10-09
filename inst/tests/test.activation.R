@@ -120,13 +120,13 @@ test_that("activation assault", {
 
 
     # TEST 5: assault all sixes, 3 FOC, ROF 3 out of range
-    test5 <- activation(list(stats = c(RAT = 6), 
+    test5 <- activation(list(stats = c(SPD = 4, RAT = 6), 
             range = list(gun = list(stats = c(RNG = 10, ROF = 3, AOE = NA, POW = 10), 
             special = ""))), 
         target = list(stats = c(DEF = 20, ARM = 21, BASE = 30)), 
         strategy = "assault",
         boost_hit = FALSE, boost_damage = FALSE, 
-        foc = 3, dist = 11, dice = rep(6, 12))
+        foc = 3, dist = 14.1, dice = rep(6, 12))
     expect_equal(object = test5, expected = 0)
 
 })
