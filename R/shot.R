@@ -57,6 +57,9 @@ shot <- function(warjack, which = 1, target = list(stats = c(DEF = 12, ARM = 18,
     if (!is.element(c("special"), names(target))) {
         target$special <- character() }
     
+    if (!is.element(c("modify"), names(target))) {
+        target$modify <- character() }
+    
     # vectorized outputs
     
     nd <- length(dist)
@@ -140,10 +143,20 @@ shot <- function(warjack, which = 1, target = list(stats = c(DEF = 12, ARM = 18,
                 
                 pos[ds] <- pos[ds] + num_dice_hit
                 
+                # knocked down sets DEF to 5
+                
+                def <- target$stats["DEF"]
+                
+                mod <- 0
+                
+                if (!is.na(target$modify["DEF"])) { mod <- target$modify["DEF"] }
+                
+                if (kd[ds]) { def <- 5 + mod }
+                
                 # see if hit
                 
                 hit[ds] <- unname(((sum(hit_roll, 
-                    warjack$stats["RAT"]) >= target$stats["DEF"] & 
+                    warjack$stats["RAT"]) >= def & 
                         !all(hit_roll < 2)) | all(hit_roll > 5)))
                 
                 if ("ammo type:quake" %in% wjs) {
@@ -216,11 +229,20 @@ shot <- function(warjack, which = 1, target = list(stats = c(DEF = 12, ARM = 18,
                 pow <- wjp
                 
                 # if not direct hit, divide POW by 2, rounding up
+                # TODO support for modify for warjack to allow for bonuses
                 
                 if (miss[ds]) { pow <- ceiling(wjp / 2) }
                 
+                # modify
+                
+                arm <- target$stats["ARM"]
+                
+                mod <- 0
+                
+                if (!is.na(target$modify["ARM"])) { mod <- target$modify["ARM"] }
+                
                 damage[ds] <- unname(pow + 
-                    sum(damage_roll) - target$stats["ARM"])
+                    sum(damage_roll) - (arm + mod))
             }
             
         }
