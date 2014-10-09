@@ -156,7 +156,7 @@ shot <- function(warjack, which = 1, target = list(stats = c(DEF = 12, ARM = 18,
             
             # if miss, scatter if is AOE
             
-            if (!hit[ds] && !is.na(warjack$range[[which]]["AOE"])) {
+            if (!hit[ds] && !is.na(warjack$range[[which]]$stats["AOE"])) {
                 
                 scatter_roll <- dice[seq.int(from = pos[ds], to = pos[ds] + 1)]
                 if (any(is.na(scatter_roll))) { stop("insufficient dice for scatter_roll") }
@@ -193,7 +193,10 @@ shot <- function(warjack, which = 1, target = list(stats = c(DEF = 12, ARM = 18,
                 if (!is.logical(hit_roll) & sum(duplicated(hit_roll)) > 0) { 
                     if ("critical knockdown" %in% wjs) { kd[ds] <- TRUE } 
                     
-                    if ("critical devastation" %in% wjs) { 
+                    if ("critical devastation" %in% wjs) {
+                        if (is.null(target$stats["BASE"]) || is.na(target$stats["BASE"])) {
+                            warning("assuming 30 mm base for critical devastation movement")
+                            target$stats["BASE"] <- 30 }
                         if (target$stats["BASE"] < 120) { 
                             dist[ds] <- dist[ds] + dice[pos[ds]]
                             pos[ds] <- pos[ds] + 1

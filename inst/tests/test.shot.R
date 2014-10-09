@@ -135,5 +135,57 @@ test_that("shot", {
     m15 <- cbind(7, 1:2, 0, c(7, 12), 1, c(1, 20))
     colnames(m15) <- colnm
     expect_equal(object = test15, expected = m15)
-
+    
+    robot <- list(stats = c(RAT = 1), 
+        range = list(gun = list(
+                stats = c(RNG = 6, ROF = 1, AOE = NA, POW = 1), 
+                special = "free boost hit")))
+    
+    # TEST 16: free boost hit
+    test16 <- shot(robot, target = list(stats = c(DEF = 5, ARM = 1)), 
+                boost_hit = FALSE, boost_damage = FALSE, foc = 0, dice = c(1, 1, 2, 6, 6))
+    expect_equal(object = unname(c(test16)), expected = c(12, 0, 0, 6, 1, 6))
+    
+    robot$range$gun$special <- "free boost damage"
+    
+    # TEST 17: free boost damage
+    test17 <- shot(robot, target = list(stats = c(DEF = 5, ARM = 1)), 
+                boost_hit = FALSE, boost_damage = FALSE, foc = 0, dice = c(1, 3, 2, 4, 6))
+    expect_equal(object = unname(c(test17)), expected = c(12, 0, 0, 6, 1, 6))
+    
+    robot$range$gun$special <- "ammo type:quake"
+    
+    # TEST 18: ammo type:quake
+    test18 <- shot(robot, target = list(stats = c(DEF = 5, ARM = 1)), 
+                boost_hit = FALSE, boost_damage = FALSE, foc = 0, dice = c(1, 3, 6, 6))
+    expect_equal(object = unname(c(test18)), expected = c(12, 0, 1, 5, 1, 6))
+    
+    robot$range$gun$special <- "critical knockdown"
+    
+    # TEST 19: critical knockdown
+    test19 <- shot(robot, target = list(stats = c(DEF = 5, ARM = 1)), 
+                boost_hit = FALSE, boost_damage = FALSE, foc = 0, dice = c(2, 2, 6, 6))
+    expect_equal(object = unname(c(test19)), expected = c(12, 0, 1, 5, 1, 6))
+    
+    # TEST 20: critical knockdown no crit
+    test20 <- shot(robot, target = list(stats = c(DEF = 5, ARM = 1)), 
+                boost_hit = FALSE, boost_damage = FALSE, foc = 0, dice = c(1,3, 6, 6))
+    expect_equal(object = unname(c(test20)), expected = c(12, 0, 0, 5, 1, 6))
+    
+    robot$range$gun$special <- "critical devastation"
+    
+    # TEST 21: critical devastation
+    test21 <- shot(robot, target = list(stats = c(DEF = 5, ARM = 1, BASE = 50)), 
+                boost_hit = FALSE, boost_damage = FALSE, foc = 0, dice = c(2, 2, 1, 6, 6))
+    expect_equal(object = unname(c(test21)), expected = c(12, 0, 1, 6, 1, 7))
+    
+    # TEST 22: critical devastation no crit
+    test22 <- shot(robot, target = list(stats = c(DEF = 5, ARM = 1, BASE = 50)), 
+                boost_hit = FALSE, boost_damage = FALSE, foc = 0, dice = c(3, 1, 6, 6))
+    expect_equal(object = unname(c(test22)), expected = c(12, 0, 0, 5, 1, 6))
+    
+    # TEST 23: miss with non-AOE 6" to 1
+    test23 <- shot(robot, target = list(stats = c(DEF = 5, ARM = 1, BASE = 30)), 
+                boost_hit = FALSE, boost_damage = FALSE, foc = 0, dice = c(1, 1))
+    expect_equal(object = unname(c(test23)), expected = c(0, 0, 0, 3, 0, 6))
 })

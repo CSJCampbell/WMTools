@@ -19,7 +19,7 @@ activation(warjack, target = list(stats = c(DEF = 12, ARM = 18, BASE = 50)),
 
   \item{strategy}{single character attack mode, from list
   'aim', 'assault' (walk and shoot), 'engage' (walk and
-  melee), 'charge', 'trample', 'slam', 'headbutt'}
+  melee), 'charge', 'trample', 'slam', 'headbut'}
 
   \item{boost_hit}{single logical boost attack roll?}
 

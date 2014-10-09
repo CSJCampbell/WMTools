@@ -91,5 +91,32 @@ test_that("ranged", {
         target = list(stats = c(DEF = 13, ARM = 13, BASE = 30)), boost_hit = TRUE, boost_damage = TRUE, 
         foc = 3, dist = seq(0, 20, length = 30), dice = rep(5, 10 * 30))
     expect_equal(object = test10, expected = c(rep(0, 3), rep(19, 12), rep(0, 15)))
-
+    
+    robot <- list(stats = c(RAT = 1), 
+        range = list(gun = list(
+                stats = c(RNG = 6, ROF = 1, AOE = NA, POW = 1), 
+                special = "linked guns")))
+    
+    # TEST 11: linked guns
+    test11 <- ranged(robot, target = list(stats = c(DEF = 5, ARM = 1)), 
+                boost_hit = FALSE, boost_damage = FALSE, foc = 0, dice = c(1, 3, 6, 6, 3, 1, 6, 6))
+    expect_equal(object = test11, expected = 24)
+    
+    # TEST 12: linked guns miss
+    test12 <- ranged(robot, target = list(stats = c(DEF = 5, ARM = 1)), 
+                boost_hit = FALSE, boost_damage = FALSE, foc = 0, dice = c(1, 2, 1, 1))
+    expect_equal(object = test12, expected = 0)
+    
+    robot$range$gun$special <- "rapid fire"
+    
+    # TEST 13: rapid fire (D3 rolled after initial shot)
+    test13 <- ranged(robot, target = list(stats = c(DEF = 5, ARM = 1)), 
+                boost_hit = FALSE, boost_damage = FALSE, foc = 0, dice = c(1, 3, 6, 6, 5, 3, 1, 5, 5, 2, 2, 4, 4))
+    expect_equal(object = test13, expected = 30)
+    
+    # TEST 14: rapid fire miss twice (D3 rolled after initial shot)
+    test14 <- ranged(robot, target = list(stats = c(DEF = 5, ARM = 1)), 
+                boost_hit = FALSE, boost_damage = FALSE, foc = 0, dice = c(1, 2, 5, 2, 1, 2, 2, 1, 1))
+    expect_equal(object = test14, expected = 2)
+    
 })

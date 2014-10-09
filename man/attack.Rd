@@ -2,7 +2,7 @@
 \alias{attack}
 \title{Perform a Melee Attack}
 \usage{
-attack(warjack, which = 1, target = list(stats = c(DEF = 12, ARM = 18, BASE
+attack(warjack, which = 1L, target = list(stats = c(DEF = 12, ARM = 18, BASE
   = 50)), charge = FALSE, boost_hit = TRUE, boost_damage = TRUE,
   foc = 0, kd = FALSE, dist = 0, dice = sample(1:6, size = 20, replace =
   TRUE), pos = 1)
@@ -11,7 +11,9 @@ attack(warjack, which = 1, target = list(stats = c(DEF = 12, ARM = 18, BASE
   \item{warjack}{list warjack object with elements stats,
   range and melee}
 
-  \item{which}{}
+  \item{which}{single integer or single character 'power'
+  index of warjack weapon to use, or identify as a power
+  attack}
 
   \item{target}{list target warjack object with elements
   stats and special stats has elements \enumerate{ \item

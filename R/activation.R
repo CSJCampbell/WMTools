@@ -4,13 +4,37 @@
 #'  Package:  \tab  WMTools \cr
 #'  Type:  \tab  Package \cr
 #'  Version:  \tab  0.1 \cr
-#'  Date:  \tab  2014-09-26 \cr
+#'  Date:  \tab  2014-10-09 \cr
 #'  Lazyload:  \tab  yes \cr
 #' }
 #' @name WMTools-package
 #' @aliases WMTools
 #' @docType package
 #' @title Tools for simulating activations in Warmachine(R)
+#' @section Special abilities recognized: warjack
+#' \enumerate{
+#'     \item gunfighter (\code{shot})
+#' }
+#' @section Special abilities recognized: range
+#' \enumerate{
+#'     \item free boost hit (\code{shot})
+#'     \item free boost damage (\code{shot})
+#'     \item ammo type:quake (\code{shot})
+#'     \item critical knockdown (\code{shot})
+#'     \item critical devastation (\code{shot})
+#'     \item linked guns (\code{ranged})
+#'     \item rapid fire (\code{ranged})
+#' }
+#' @section Special abilities recognized: melee
+#' \enumerate{
+#'     \item chain attack bloodbath (\code{melee})
+#'     \item powerful charge (\code{attack})
+#'     \item crit knockdown (\code{attack})
+#' }
+#' @section Special abilities recognized: target
+#' \enumerate{
+#'     \item stealth (\code{shot})
+#' }
 #' @keywords package game simulation
 #' @examples
 #'     blueleader <- list(stats = c(SPD = 5, MAT = 7, RAT = 5), 
@@ -101,6 +125,7 @@ activation <- function(warjack, target = list(stats = c(DEF = 12, ARM = 18, BASE
 #'     \item ARM single numeric armour value
 #'     \item BASE single numeric diameter of base (mm)
 #' }
+#' @param strategy single character attack mode, from list 'aim', 'assault' (walk and shoot), 'engage' (walk and melee), 'charge', 'trample', 'slam', 'headbut'
 #' @param boost_hit single logical boost attack roll?
 #' @param boost_damage single logical boost damage roll?
 #' @param foc single numeric
