@@ -18,6 +18,8 @@
 #' @param dist single numeric distance between bases (default 0)
 #' @param dice numeric vector (default \code{sample(1:6)})
 #' @param pos single numeric (default 1)
+#' @param num_dice_hit single numeric starting number of attack dice to roll (default 2)
+#' @param num_dice_dam single numeric starting number of damage dice to roll (default 2)
 #' @return named vector with elements \enumerate{
 #'     \item damage amount of damage inflicted
 #'     \item focus remaining focus following attack
@@ -38,16 +40,13 @@
 
 attack <- function(warjack, which = 1L, target = list(stats = c(DEF = 12, ARM = 18, BASE = 50)), 
     charge = FALSE, boost_hit = TRUE, boost_damage = TRUE, foc = 0, kd = FALSE, dist = 0,
-    dice = sample(1:6, size = 20, replace = TRUE), pos = 1) {
+    dice = sample(1:6, size = 20, replace = TRUE), pos = 1, 
+    num_dice_hit = 2, num_dice_dam = 2) {
     
     if (!is.element("stats", names(warjack)) | !is.element("melee", names(warjack))) {
         stop("missing elements in warjack object") }
     
     if (is.na(which)) { stop("which is missing") }
-    
-    num_dice_hit <- 2
-    
-    num_dice_dam <- 2
     
     damage <- 0
     

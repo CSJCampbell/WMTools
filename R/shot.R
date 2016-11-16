@@ -92,6 +92,8 @@ shot <- function(warjack, which = 1, target = list(stats = c(DEF = 12, ARM = 18,
         
     } else { kd <- rep(kd, times = nd) }
     
+    kd <- as.logical(kd)
+    
     wjs <- warjack$range[[which]]$special
     
     wjp <- warjack$range[[which]]$stats["POW"]
